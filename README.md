@@ -16,6 +16,8 @@ and publishes a required check-run (default: `Review Agent Code Review`).
 4. It runs your Review Agent/OpenCode command.
 5. It validates the JSON response outside the agent and applies deterministic pass/fail rules.
 
+The reusable job runs on `self-hosted` runners.
+
 ## Install in Another Repository
 
 1. Add a `CODE_REVIEW.md` file to the consumer repo (use `CODE_REVIEW.template.md` in this repo).
