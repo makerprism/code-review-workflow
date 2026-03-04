@@ -1,0 +1,90 @@
+name: Review Agent Reusable Review
+
+on:
+  workflow_call:
+    inputs:
+      code_review_path:
+        description: Path to CODE_REVIEW markdown in caller repo
+        required: false
+        type: string
+        default: CODE_REVIEW.md
+      review_agent_command:
+        description: Shell command that runs Review Agent/OpenCode and prints JSON to stdout
+        required: false
+        type: string
+        default: ./scripts/run-review-agent.sh
+      check_name:
+        description: Name of check-run to publish
+        required: false
+        type: string
+        default: Review Agent Code Review
+      max_files:
+        description: Max changed files sent to the model
+        required: false
+        type: number
+        default: 120
+      max_patch_chars:
+        description: Max cumulative patch characters sent to the model
+        required: false
+        type: number
+        default: 300000
+      fail_on_error:
+        description: Fail closed when agent/parsing errors happen
+        required: false
+        type: boolean
+        default: true
+      allow_required_not_applicable:
+        description: Allow required standards to return not_applicable
+        required: false
+        type: boolean
+        default: false
+      workflow_ref:
+        description: Ref of makerprism/code-review-workflow to execute
+        required: false
+        type: string
+        default: main
+
+jobs:
+  review-agent:
+    name: Review Agent Review
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/makerprism/coding-agent-base:1.0.0
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+      issues: write
+      packages: read
+
+    steps:
+      - name: Checkout caller repository (base branch)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: caller
+
+      - name: Checkout workflow implementation repository
+        uses: actions/checkout@v4
+        with:
+          repository: makerprism/code-review-workflow
+          ref: ${{ inputs.workflow_ref }}
+          path: .review-agent-workflow
+
+      - name: Run Review Agent gate
+        working-directory: .review-agent-workflow
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REVIEW_AGENT_COMMAND: ${{ inputs.review_agent_command }}
+          REVIEW_AGENT_CODE_REVIEW_PATH: ${{ github.workspace }}/caller/${{ inputs.code_review_path }}
+          REVIEW_AGENT_CHECK_NAME: ${{ inputs.check_name }}
+          REVIEW_AGENT_MAX_FILES: ${{ inputs.max_files }}
+          REVIEW_AGENT_MAX_PATCH_CHARS: ${{ inputs.max_patch_chars }}
+          REVIEW_AGENT_FAIL_ON_ERROR: ${{ inputs.fail_on_error }}
+          REVIEW_AGENT_ALLOW_REQUIRED_NA: ${{ inputs.allow_required_not_applicable }}
+        run: node workflows/review-agent/review-agent.mjs
