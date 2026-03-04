@@ -1,24 +1,26 @@
 # CODE_REVIEW.md Template
 
-Use this structure in consumer repositories.
-
 ```md
-# Project Code Review Standards
+# CODE_REVIEW.md
 
-### [CR-001] Example standard title
+Use this file to define merge-gating standards for this repo.
+Only standards listed here are enforced.
+
+### [CR-001] <Rule title>
 - required: true
 - applies_when: always
-- pass_criteria: Describe exact project-specific rule.
-- evidence_required: What proof reviewer must cite.
+- pass_criteria: <exact pass condition>
+- evidence_required: <file/line + why>
 
-### [CR-002] Example conditional standard
+### [CR-002] <Rule title>
 - required: true
-- applies_when: only when migrations are present
-- pass_criteria: Explain expected migration safety behavior.
-- evidence_required: Mention file + line and why requirement passes/fails.
-```
+- applies_when: when relevant files change
+- pass_criteria: <exact pass condition>
+- evidence_required: <file/line + why>
 
-Notes:
-- IDs inside `[]` are mandatory and must be unique.
-- `required: true` standards are merge-blocking.
-- The workflow evaluates only what is listed in `CODE_REVIEW.md`.
+### [CR-003] <Rule title>
+- required: false
+- applies_when: optional/conditional case
+- pass_criteria: <exact pass condition>
+- evidence_required: <file/line + why>
+```

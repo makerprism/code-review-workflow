@@ -16,9 +16,10 @@ and publishes a required check-run (default: `Review Agent Code Review`).
 4. It runs your Review Agent/OpenCode command.
 5. It validates the JSON response outside the agent and applies deterministic pass/fail rules.
 
-## Consumer Setup
+## Install in Another Repository
 
-Add `.github/workflows/review-agent.yml` to the consumer repo:
+1. Add a `CODE_REVIEW.md` file to the consumer repo (use `CODE_REVIEW.template.md` in this repo).
+2. Add `.github/workflows/review-agent.yml` to the consumer repo:
 
 ```yaml
 name: Review Agent Review
@@ -41,6 +42,13 @@ jobs:
       code_review_path: CODE_REVIEW.md
       workflow_ref: v1
 ```
+
+3. Add required model secrets in the consumer repo or org secrets (for example `OPENAI_API_KEY` and/or `ANTHROPIC_API_KEY`).
+4. Create labels in the consumer repo:
+   - `review:approved`
+   - `review:changes-requested`
+5. In branch protection, require the check `Review Agent Code Review`.
+6. Ensure GitHub Actions is configured to allow reusable workflows from `makerprism/code-review-workflow`.
 
 By default the reusable workflow runs `./scripts/run-review-agent.sh` from this repository.
 You can override it with `review_agent_command` if needed.
