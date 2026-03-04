@@ -50,7 +50,7 @@ jobs:
     if: github.event_name == 'pull_request_target'
     runs-on: self-hosted
     container:
-      image: ghcr.io/makerprism/coding-agent-base:1.0.0
+      image: ghcr.io/makerprism/coding-agent-base:1
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
