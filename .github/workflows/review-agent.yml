@@ -47,7 +47,9 @@ on:
 jobs:
   review-agent:
     name: Review Agent Review
-    if: github.event_name == 'pull_request_target'
+    if: |
+      github.event_name == 'pull_request_target' &&
+      github.event.pull_request.head.repo.fork == false
     runs-on: self-hosted
     container:
       image: ghcr.io/makerprism/dev-base:1

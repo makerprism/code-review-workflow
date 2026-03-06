@@ -82,6 +82,7 @@ Only standards listed there are evaluated.
 ## Security Model
 
 - Intended for `pull_request_target`.
+- **Fork PRs are blocked** — the workflow skips on pull requests from forks to prevent token abuse.
 - Do not execute PR head code.
 - Review payload is built from GitHub API data and base-branch files.
 - Keep permissions minimal.
