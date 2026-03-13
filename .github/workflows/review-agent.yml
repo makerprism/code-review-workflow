@@ -50,7 +50,7 @@ jobs:
     if: |
       github.event_name == 'pull_request_target' &&
       github.event.pull_request.head.repo.fork == false
-    runs-on: self-hosted
+    runs-on: ubicloud-standard-2
     container:
       image: ghcr.io/makerprism/dev-base:1
       credentials:
